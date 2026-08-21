@@ -1,11 +1,11 @@
-# DBSJP School Interconnectivity Platform
+# Dubai British School Jumeirah Park — School Interconnectivity Platform
 
-An interactive, card-based guide to the systems, processes and practices across DBSJP and the ways they influence one another. The experience begins with six simple entry points and reveals only the relationships relevant to the user's current focus.
+An interactive, card-based guide to the systems, processes and practices across Dubai British School Jumeirah Park and the ways they influence one another. The experience begins with six simple entry points and reveals only the relationships relevant to the user's current focus.
 
 ## Files
 
 - `index.html` — semantic page structure and metadata
-- `styles.css` — responsive DBSJP-style visual design
+- `styles.css` — responsive Dubai British School Jumeirah Park visual design
 - `app.js` — navigation, item reveals, breadcrumbs and focused connection behaviour
 - `data.js` — the 30 school items and 102 directed relationships
 - `tools/extract-data.mjs` — regenerates `data.js` from the original map HTML

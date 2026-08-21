@@ -61,7 +61,7 @@
   }
 
   function homeView() {
-    return `<section class="hero"><div><p class="eyebrow">DBSJP SCHOOL INTERCONNECTIVITY</p><h1>Understand<br>our school<span class="accent">.</span></h1><p class="lede">Explore how the key systems, processes and practices across DBSJP work — and how they connect.</p></div><div class="orbit" aria-hidden="true"><span class="orbit-dot"></span><div class="orbit-copy">Start simple.<span>See the connections.</span></div></div></section>
+    return `<section class="hero"><div><p class="eyebrow">DUBAI BRITISH SCHOOL JUMEIRAH PARK · SCHOOL INTERCONNECTIVITY</p><h1>Understand<br>our school<span class="accent">.</span></h1><p class="lede">Explore how the key systems, processes and practices across Dubai British School Jumeirah Park work — and how they connect.</p></div><div class="orbit" aria-hidden="true"><span class="orbit-dot"></span><div class="orbit-copy">Start simple.<span>See the connections.</span></div></div></section>
     <section><div class="section-heading"><div><p class="eyebrow">SIX PLACES TO START</p><h2>Choose an area to explore</h2></div><p>Select a card to meet the systems and practices within it. You can follow connections in any direction from there.</p></div><div class="category-grid">${categories.map((category, index) => `<button class="category-card" data-category="${escapeHtml(category)}" data-index="${index}"><span class="category-icon" aria-hidden="true">${icons[index]}</span><span class="category-count">0${nodes.filter((node) => node.group === category).length}</span><h3>${escapeHtml(category)}</h3><p>${escapeHtml(categoryCopy[category])}</p><span class="card-link">Explore area →</span></button>`).join("")}</div></section>`;
   }
 
