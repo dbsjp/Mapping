@@ -14,7 +14,7 @@
     "Dialogue & Review": "How reflection, voice and conversation drive next steps.",
   };
 
-  const state = { mode: "understand", category: null, focus: null, trail: [], expanded: new Set(), full: new Set() };
+  const state = { mode: "understand", category: null, focus: null, trail: [], full: new Set() };
   const byId = (id) => nodes.find((node) => node.id === id);
   const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
   const shortDescription = (text) => text.split(/(?<=[.!?])\s/)[0];
@@ -31,7 +31,7 @@
     if (state.category) params.set("category", state.category);
     if (state.focus) params.set("focus", state.focus);
     const url = `${location.pathname}${params.size ? `?${params}` : ""}`;
-    history[replace ? "replaceState" : "pushState"]({ ...state, expanded: [], full: [] }, "", url);
+    history[replace ? "replaceState" : "pushState"]({ ...state, full: [] }, "", url);
   }
 
   function restoreFromUrl() {
@@ -50,13 +50,12 @@
   }
 
   function itemCard(node, relation = "") {
-    const expanded = state.expanded.has(node.id);
     const full = state.full.has(node.id);
     const concise = shortDescription(node.description);
-    return `<div class="card-wrap">${relation ? `<span class="relation-label">${escapeHtml(relation)}</span>` : ""}<article class="item-card${expanded ? " open" : ""}">
-      <div class="item-top"><span>${escapeHtml(node.group)}</span><button class="info-button" data-info="${node.id}" aria-expanded="${expanded}" aria-label="${expanded ? "Hide" : "Understand"} ${escapeHtml(node.title)}">${expanded ? "×" : "i"}</button></div>
+    return `<div class="card-wrap">${relation ? `<span class="relation-label">${escapeHtml(relation)}</span>` : ""}<article class="item-card${full ? " open" : ""}">
+      <div class="item-top"><span>${escapeHtml(node.group)}</span><span class="summary-label">At a glance</span></div>
       <h3>${escapeHtml(node.title)}</h3>
-      ${expanded ? `<div class="reveal"><p>${escapeHtml(full ? node.description : concise)}</p>${node.description !== concise ? `<button class="text-button" data-full="${node.id}">${full ? "Show less" : "Read full description"}</button>` : ""}</div>` : ""}
+      <div class="reveal"><p>${escapeHtml(full ? node.description : concise)}</p>${node.description !== concise ? `<button class="text-button" data-full="${node.id}" aria-expanded="${full}">${full ? "Show summary" : "Read full description"}</button>` : ""}</div>
       <button class="explore-button" data-focus="${node.id}">Explore connections <span aria-hidden="true">→</span></button>
     </article></div>`;
   }
@@ -98,7 +97,7 @@
     app.innerHTML = `<div class="shell">${breadcrumbs()}${content}</div>`;
   }
 
-  function home(push = true) { state.mode = "understand"; state.category = null; state.focus = null; state.trail = []; state.expanded.clear(); state.full.clear(); if (push) setUrl(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+  function home(push = true) { state.mode = "understand"; state.category = null; state.focus = null; state.trail = []; state.full.clear(); if (push) setUrl(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function selectCategory(category) { state.mode = "understand"; state.category = category; state.focus = null; state.trail = [{ type: "category", value: category, label: category }]; setUrl(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function selectFocus(id) { const node = byId(id); state.focus = id; state.category = node.group; const existing = state.trail.findIndex((item) => item.type === "focus" && item.value === id); if (existing >= 0) state.trail = state.trail.slice(0, existing + 1); else state.trail.push({ type: "focus", value: id, label: node.title }); setUrl(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
@@ -108,7 +107,6 @@
     if (button.dataset.mode) { state.mode = button.dataset.mode; if (state.mode === "connections" && !state.focus) state.focus = "maps"; setUrl(); render(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
     if (button.dataset.category) return selectCategory(button.dataset.category);
     if (button.dataset.focus) return selectFocus(button.dataset.focus);
-    if (button.dataset.info) { state.expanded.has(button.dataset.info) ? state.expanded.delete(button.dataset.info) : state.expanded.add(button.dataset.info); render(); return; }
     if (button.dataset.full) { state.full.has(button.dataset.full) ? state.full.delete(button.dataset.full) : state.full.add(button.dataset.full); render(); return; }
     if (button.dataset.crumb !== undefined) { const index = Number(button.dataset.crumb); const item = state.trail[index]; state.trail = state.trail.slice(0, index + 1); if (item.type === "category") { state.category = item.value; state.focus = null; } else { state.focus = item.value; state.category = byId(item.value).group; } setUrl(); render(); }
   });
