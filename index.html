@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore how the key systems, processes and practices across DBSJP work — and how they connect.">
+  <meta name="theme-color" content="#102f3c">
+  <title>Understand our school | DBSJP</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="data.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+    <button class="brand" type="button" data-action="home" aria-label="DBSJP School Connections home">
+      <span class="brand-name">DBS<span>JP</span></span>
+      <span class="brand-rule" aria-hidden="true"></span>
+      <span class="brand-section">School connections</span>
+    </button>
+    <nav class="main-nav" aria-label="Primary navigation">
+      <button type="button" data-mode="understand" class="active">Understand our school</button>
+      <button type="button" data-mode="connections">Explore Connections</button>
+    </nav>
+    <button class="home-button" type="button" data-action="home"><span aria-hidden="true">⌂</span> Home</button>
+  </header>
+
+  <main id="content" tabindex="-1">
+    <div id="app" aria-live="polite"></div>
+  </main>
+
+  <footer>
+    <strong>DBSJP</strong>
+    <span>School Interconnectivity · Exemplar</span>
+    <button type="button" data-action="home">Return home ↑</button>
+  </footer>
+</body>
+</html>
