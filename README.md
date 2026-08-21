@@ -6,7 +6,7 @@ An interactive, card-based guide to the systems, processes and practices across 
 
 - `index.html` — semantic page structure and metadata
 - `styles.css` — responsive Dubai British School Jumeirah Park visual design
-- `app.js` — navigation, item reveals, breadcrumbs and focused connection behaviour
+- `app.js` — unified navigation, item reveals, breadcrumbs and incoming/outgoing connection behaviour
 - `data.js` — the 30 school items and 102 directed relationships
 - `tools/extract-data.mjs` — regenerates `data.js` from the original map HTML
 - `tools/validate.mjs` — checks counts, categories, IDs and relationship references

@@ -37,3 +37,27 @@ footer{background:var(--navy)}
 footer button{color:#fff}
 .brand-name{max-width:330px;font-size:17px;line-height:1.1;text-align:left;white-space:normal}
 @media(max-width:600px){.brand-name{max-width:220px;font-size:14px}.brand-name span{display:block}footer strong{flex:1 0 100%;font-size:16px}}
+
+/* Unified, progressively disclosed exploration view */
+.site-header{justify-content:flex-start}.home-button{margin-left:auto}
+.compact-hero{min-height:210px;margin:0 0 34px;padding:34px clamp(28px,5vw,56px);display:flex;align-items:flex-end;justify-content:space-between;gap:28px}
+.compact-hero:after{right:-72px;top:-190px;width:330px;height:330px}
+.compact-hero>div:first-child{position:relative;z-index:1;max-width:780px}
+.compact-hero h1{font-size:clamp(38px,5vw,58px);line-height:1;letter-spacing:-.045em}
+.compact-hero p:last-child{max-width:720px;margin:14px 0 0;font-size:16px;line-height:1.5}
+.compact-hero .focus-meta{position:relative;z-index:1;flex:0 0 auto;margin:0}
+.relationship-section,.area-items{padding:30px 0 42px;border-top:1px solid var(--line)}
+.relationship-section:first-of-type{border-top:0;padding-top:0}
+.relationship-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:22px}
+.relationship-heading .eyebrow{margin-bottom:8px}
+.relationship-heading h2{margin:0;color:var(--navy);font-size:clamp(28px,3.5vw,38px);letter-spacing:-.04em}
+.relationship-count{min-width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:var(--soft-blue);color:var(--navy-2);font-size:13px;font-weight:800}
+.relationship-section.incoming .relationship-count{background:#fff1f3;color:var(--red-dark)}
+.relationship-section.incoming .item-card{border-top:4px solid var(--red)}
+.relationship-section.outgoing .item-card{border-top:4px solid var(--blue)}
+.section-intro{margin:-8px 0 22px;color:var(--muted);line-height:1.55}
+.empty-state{margin:0;padding:18px 20px;border:1px dashed #bdcadd;border-radius:14px;background:#fff;color:var(--muted)}
+.area-items{margin-top:4px}
+
+@media(max-width:900px){.compact-hero{align-items:flex-start;flex-direction:column}.compact-hero .focus-meta{margin-top:0}}
+@media(max-width:600px){.compact-hero{min-height:0;margin:0 -5px 28px;padding:27px 25px}.compact-hero h1{font-size:38px}.compact-hero p:last-child{font-size:15px}.relationship-section,.area-items{padding:25px 0 34px}.relationship-heading{margin-bottom:18px}.relationship-heading h2{font-size:28px}.relationship-count{min-width:36px;height:36px}.breadcrumbs{min-height:56px}}
