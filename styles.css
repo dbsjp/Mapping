@@ -2,3 +2,36 @@
 @media(max-width:900px){.main-nav{display:none}.hero{grid-template-columns:1fr;min-height:auto;padding:80px 0}.orbit{display:none}.category-grid,.item-grid{grid-template-columns:repeat(2,1fr)}.flow-layout{grid-template-columns:1fr}.focus-node{grid-row:1}.flow-node.incoming:after,.flow-node.outgoing:before{display:none}.flow-column h2{text-align:center}.section-heading{align-items:start}.legend .definition{margin-left:0}}
 @media(max-width:600px){.site-header{height:66px;padding:0 16px}.brand-section,.brand-rule,.home-button{display:none}.shell{width:min(100% - 32px,1160px)}.hero{padding:62px 0}.hero h1{font-size:52px}.lede{font-size:17px}.section-heading{display:block}.section-heading>p{margin-top:13px;font-size:14px}.category-grid,.item-grid{grid-template-columns:1fr}.category-card{min-height:235px}.category-hero,.focus-hero{margin-right:-5px;margin-left:-5px;padding:42px 27px}.connections-intro{text-align:left}.connection-map{padding:15px}.flow-layout{padding:25px 0}.legend{display:grid;gap:9px}footer{flex-wrap:wrap}footer button{margin-left:0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.category-card{transition:none}}
+
+/* DBSJP Pathways brand system */
+:root{--navy:#071d3a;--navy-2:#0f315d;--teal:#c81932;--red:#c81932;--red-dark:#a91429;--blue:#4f8cc9;--ink:#152033;--muted:#5f6f86;--paper:#fbfcfe;--line:#dce4ee;--soft:#f4f7fb;--soft-blue:#eaf3ff;--amber:#9a5a00;--shadow:0 26px 70px rgba(7,29,58,.13)}
+body{background:linear-gradient(180deg,#fff 0,var(--soft) 520px),var(--soft)}
+.site-header{border-bottom-color:rgba(220,228,238,.92);background:rgba(255,255,255,.94);backdrop-filter:blur(16px)}
+.brand-name span,.accent{color:var(--red)}
+.main-nav button.active:after{background:var(--red)}
+button:focus-visible,select:focus-visible,a:focus-visible{outline-color:var(--blue)}
+.eyebrow{color:var(--red-dark)}
+.orbit{background:radial-gradient(circle,var(--soft-blue) 0 31%,transparent 31.5%)}
+.orbit:before,.orbit:after{border-color:rgba(79,140,201,.32)}
+.orbit-copy span{color:var(--red)}
+.orbit-dot{background:var(--red);box-shadow:260px 65px 0 var(--blue),198px 260px 0 var(--navy-2)}
+.category-card{--category:var(--navy)}
+.category-card[data-index="1"]{--category:var(--red)}
+.category-card[data-index="2"]{--category:var(--blue)}
+.category-card[data-index="3"]{--category:var(--navy-2)}
+.category-card[data-index="4"]{--category:var(--red-dark)}
+.category-card[data-index="5"]{--category:#365f91}
+.category-hero,.focus-hero{background:linear-gradient(135deg,var(--navy),var(--navy-2))}
+.category-hero .eyebrow,.focus-hero .eyebrow{color:#ff8b9b}
+.item-card.open{border-color:rgba(200,25,50,.45);box-shadow:0 14px 38px rgba(7,29,58,.08)}
+.summary-label{color:var(--red);font-size:9px;font-weight:850;letter-spacing:.1em}
+.text-button{color:var(--red)}
+.reveal{padding:0 0 18px;border-top:0}
+.reveal p{min-height:4.8em;margin-bottom:13px}
+.key:before{background:var(--blue)}
+.flow-node.outgoing{border-right-color:var(--blue)}
+.flow-node.outgoing:before{color:var(--blue)}
+.focus-node{border-color:#dce9f7;background:linear-gradient(135deg,var(--navy),var(--navy-2))}
+.focus-node small{color:#a9ccee}
+footer{background:var(--navy)}
+footer button{color:#fff}
