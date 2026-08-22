@@ -1,12 +1,12 @@
 # Dubai British School Jumeirah Park — School Interconnectivity Platform
 
-An interactive, card-based guide to the systems, processes and practices across Dubai British School Jumeirah Park and the ways they influence one another. The experience begins with six simple entry points and reveals only the relationships relevant to the user's current focus.
+An interactive guide to the systems, processes and practices across Dubai British School Jumeirah Park and the ways they influence one another. The experience begins with six simple card-based entry points and reveals only the relationships relevant to the user's current focus, with an optional complete map showing all 30 items and 102 directed relationships.
 
 ## Files
 
 - `index.html` — semantic page structure and metadata
 - `styles.css` — responsive Dubai British School Jumeirah Park visual design
-- `app.js` — unified navigation, item reveals, breadcrumbs and incoming/outgoing connection behaviour
+- `app.js` — unified navigation, item reveals, breadcrumbs, incoming/outgoing connection behaviour and the zoomable full-school map
 - `data.js` — the 30 school items and 102 directed relationships
 - `tools/extract-data.mjs` — regenerates `data.js` from the original map HTML
 - `tools/validate.mjs` — checks counts, categories, IDs and relationship references
