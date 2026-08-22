@@ -16,10 +16,11 @@
 
   const categoryColours = ["#071d3a", "#c81932", "#4f8cc9", "#0f315d", "#a91429", "#365f91"];
   const mapWidth = 1800;
-  const mapHeight = 1080;
-  let mapViewport = { x: 0, y: 0, width: mapWidth, height: mapHeight };
+  const mapHeight = 2100;
+  const initialMapViewport = { x: 0, y: 0, width: mapWidth, height: 1000 };
+  let mapViewport = { ...initialMapViewport };
 
-  const state = { view: "explore", category: null, focus: null, mapFocus: null, trail: [], full: new Set() };
+  const state = { view: "explore", category: null, focus: null, mapFocus: null, mapMode: "all", trail: [], full: new Set() };
   const byId = (id) => nodes.find((node) => node.id === id);
   const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
   const shortDescription = (text) => text.split(/(?<=[.!?])\s/)[0];
@@ -118,19 +119,20 @@
   }
 
   function fullMapLayout() {
-    const positions = new Map();
-    categories.forEach((category, column) => {
-      nodes.filter((node) => node.group === category).forEach((node, row) => {
-        positions.set(node.id, { x: 165 + column * 294, y: 158 + row * 126 });
-      });
-    });
-    return positions;
+    return new Map(Object.entries({
+      dsib: { x: 170, y: 120 }, bso: { x: 650, y: 120 }, taaleem: { x: 1130, y: 120 }, safeguarding: { x: 1630, y: 120 },
+      sdp: { x: 280, y: 470 }, improvement: { x: 760, y: 470 }, mer: { x: 1240, y: 470 }, values: { x: 1630, y: 470 },
+      maps: { x: 170, y: 820 }, descriptors: { x: 650, y: 820 }, super: { x: 1130, y: 820 }, core: { x: 1630, y: 820 },
+      cat4: { x: 130, y: 1180 }, ngrt: { x: 430, y: 1180 }, data: { x: 730, y: 1180 }, context: { x: 1030, y: 1180 }, assessment: { x: 1330, y: 1180 }, inclusion: { x: 1630, y: 1180 },
+      bigq: { x: 170, y: 1530 }, outcomes: { x: 520, y: 1530 }, criteria: { x: 870, y: 1530 }, ptc: { x: 1220, y: 1530 }, ppm: { x: 1630, y: 1530 },
+      tutor: { x: 130, y: 1900 }, student_leadership: { x: 385, y: 1900 }, enrichment: { x: 640, y: 1900 }, careers: { x: 895, y: 1900 }, challenge: { x: 1150, y: 1900 }, far: { x: 1405, y: 1900 }, professional_development: { x: 1660, y: 1900 },
+    }));
   }
 
   function mapEdgePoint(from, to) {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
-    const ratio = 1 / Math.max(Math.abs(dx) / 112, Math.abs(dy) / 43, 1);
+    const ratio = 1 / Math.max(Math.abs(dx) / 112, Math.abs(dy) / 49, 1);
     return { x: from.x + dx * ratio, y: from.y + dy * ratio };
   }
 
@@ -156,17 +158,18 @@
   function fullMapView() {
     const positions = fullMapLayout();
     const selected = state.mapFocus;
+    const focusSelected = selected && state.mapMode === "focus";
     const related = selected ? directConnections(selected) : { incoming: [], outgoing: [] };
     const incomingIds = new Set(related.incoming.map((node) => node.id));
     const outgoingIds = new Set(related.outgoing.map((node) => node.id));
     const relationshipClass = (source, target) => {
-      if (!selected) return "";
+      if (!focusSelected) return "";
       if (source === selected) return " outgoing";
       if (target === selected) return " incoming";
       return " muted";
     };
     const nodeClass = (id) => {
-      if (!selected) return "";
+      if (!focusSelected) return "";
       if (id === selected) return " focus";
       if (incomingIds.has(id) && outgoingIds.has(id)) return " both";
       if (incomingIds.has(id)) return " incoming";
@@ -178,22 +181,24 @@
       const target = positions.get(link.target);
       const start = mapEdgePoint(source, target);
       const end = mapEdgePoint(target, source);
-      const bend = ((index % 7) - 3) * 10;
-      const cx = (start.x + end.x) / 2 + (end.y - start.y) * .035 + bend;
-      const cy = (start.y + end.y) / 2 - (end.x - start.x) * .018;
+      const reverse = links.some((candidate) => candidate.source === link.target && candidate.target === link.source);
+      const length = Math.hypot(end.x - start.x, end.y - start.y) || 1;
+      const offset = reverse ? (link.source < link.target ? 7 : -7) : 0;
+      const offsetX = -(end.y - start.y) / length * offset;
+      const offsetY = (end.x - start.x) / length * offset;
       const kind = relationshipClass(link.source, link.target);
       const marker = kind.includes("outgoing") ? "map-arrow-out" : kind.includes("incoming") ? "map-arrow-in" : "map-arrow";
-      return `<path class="map-link${kind}" data-source="${link.source}" data-target="${link.target}" d="M ${start.x} ${start.y} Q ${cx} ${cy} ${end.x} ${end.y}" marker-end="url(#${marker})"/>`;
+      const path = `M ${start.x + offsetX} ${start.y + offsetY} L ${end.x + offsetX} ${end.y + offsetY}`;
+      return `<path class="map-link-halo${kind}" d="${path}"/><path class="map-link${kind}" data-source="${link.source}" data-target="${link.target}" d="${path}" marker-end="url(#${marker})"/>`;
     }).join("");
-    const bands = categories.map((category, index) => `<g class="map-category"><rect x="${35 + index * 294}" y="22" width="260" height="1018" rx="26"/><circle cx="65" cy="67" r="7" style="fill:${categoryColours[index]}" transform="translate(${index * 294} 0)"/><text x="82" y="74" transform="translate(${index * 294} 0)">${escapeHtml(category)}</text></g>`).join("");
     const mapNodes = nodes.map((node) => {
       const position = positions.get(node.id);
       const lines = mapTitleLines(node.title);
-      return `<g class="map-node${nodeClass(node.id)}" data-map-node="${node.id}" role="button" tabindex="0" aria-label="${escapeHtml(node.title)}, ${escapeHtml(node.group)}" transform="translate(${position.x - 112} ${position.y - 43})"><rect width="224" height="86" rx="15" style="--node-colour:${categoryColours[categories.indexOf(node.group)]}"/><text class="map-node-title" x="16" y="${lines.length === 1 ? 39 : lines.length === 2 ? 31 : 24}">${lines.map((line, index) => `<tspan x="16" dy="${index ? 18 : 0}">${escapeHtml(line)}</tspan>`).join("")}</text></g>`;
+      return `<g class="map-node${nodeClass(node.id)}" data-map-node="${node.id}" role="button" tabindex="0" aria-label="${escapeHtml(node.title)}, ${escapeHtml(node.group)}" transform="translate(${position.x - 112} ${position.y - 49})"><rect width="224" height="98" rx="16" style="--node-colour:${categoryColours[categories.indexOf(node.group)]}"/><text class="map-node-title" x="16" y="${lines.length === 1 ? 38 : lines.length === 2 ? 29 : 21}">${lines.map((line, index) => `<tspan x="16" dy="${index ? 17 : 0}">${escapeHtml(line)}</tspan>`).join("")}</text><text class="map-node-group" x="16" y="82">${escapeHtml(node.group)}</text></g>`;
     }).join("");
     return `<section class="map-intro"><div><p class="eyebrow">THE COMPLETE PICTURE</p><h1>See the whole school system<span class="accent">.</span></h1><p>Explore all 30 school systems, processes and practices and all 102 directional relationships. Select any item to make its direct influences clear.</p></div><div class="map-stat"><strong>30</strong><span>items</span></div><div class="map-stat"><strong>102</strong><span>relationships</span></div></section>
-      <div class="map-toolbar" aria-label="Map controls"><div class="map-legend"><span class="incoming">Influenced by</span><span class="outgoing">Influences</span><span>A → B means A influences B</span></div><div><button data-map-zoom="in" aria-label="Zoom in">+</button><button data-map-zoom="out" aria-label="Zoom out">−</button><button data-map-reset>Reset view</button></div></div>
-      <div class="full-map-layout"><div class="map-canvas"><svg id="full-school-map" viewBox="${mapViewport.x} ${mapViewport.y} ${mapViewport.width} ${mapViewport.height}" role="img" aria-label="Complete network of 30 school items and 102 directional relationships"><defs><marker id="map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"/></marker><marker id="map-arrow-in" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"/></marker><marker id="map-arrow-out" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"/></marker></defs>${bands}<g class="map-links">${paths}</g><g class="map-nodes">${mapNodes}</g></svg><p class="map-hint">Drag to move · Scroll or use the controls to zoom</p></div>${mapPanel()}</div>`;
+      <div class="map-toolbar" aria-label="Map controls"><div class="map-mode-switch" aria-label="Relationship display"><button data-map-mode="all" class="${state.mapMode === "all" ? "active" : ""}">All relationships</button><button data-map-mode="focus" class="${state.mapMode === "focus" ? "active" : ""}"${selected ? "" : " disabled"}>Focus on selection</button></div><div class="map-legend"><span class="incoming">Influenced by</span><span class="outgoing">Influences</span><span>A → B means A influences B</span></div><div><button data-map-zoom="in" aria-label="Zoom in">+</button><button data-map-zoom="out" aria-label="Zoom out">−</button><button data-map-reset>Back to the top</button></div></div>
+      <div class="full-map-layout"><div class="map-canvas"><svg id="full-school-map" viewBox="${mapViewport.x} ${mapViewport.y} ${mapViewport.width} ${mapViewport.height}" role="img" aria-label="Complete network of 30 school items and 102 directional relationships"><defs><marker id="map-arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto"><path d="M 0 0 L 12 6 L 0 12 z"/></marker><marker id="map-arrow-in" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M 0 0 L 12 6 L 0 12 z"/></marker><marker id="map-arrow-out" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M 0 0 L 12 6 L 0 12 z"/></marker></defs><rect class="map-board" width="${mapWidth}" height="${mapHeight}"/><g class="map-links">${paths}</g><g class="map-nodes">${mapNodes}</g></svg><p class="map-hint">Drag to move through the map · Scroll or use the controls to zoom</p></div>${mapPanel()}</div>`;
   }
 
   function initialiseMap() {
@@ -201,8 +206,9 @@
     if (!svg) return;
     const applyViewBox = () => svg.setAttribute("viewBox", `${mapViewport.x} ${mapViewport.y} ${mapViewport.width} ${mapViewport.height}`);
     const zoom = (factor, anchorX = .5, anchorY = .5) => {
+      const aspect = mapViewport.height / mapViewport.width;
       const nextWidth = Math.max(620, Math.min(mapWidth, mapViewport.width * factor));
-      const nextHeight = nextWidth * mapHeight / mapWidth;
+      const nextHeight = nextWidth * aspect;
       mapViewport.x += (mapViewport.width - nextWidth) * anchorX;
       mapViewport.y += (mapViewport.height - nextHeight) * anchorY;
       mapViewport.width = nextWidth; mapViewport.height = nextHeight;
@@ -251,13 +257,13 @@
   }
 
   function showMap(id = null) {
-    state.view = "map"; state.mapFocus = byId(id) ? id : null; state.focus = null; state.category = null; state.trail = []; state.full.clear();
+    state.view = "map"; state.mapFocus = byId(id) ? id : null; state.mapMode = id ? "focus" : "all"; state.focus = null; state.category = null; state.trail = []; state.full.clear(); mapViewport = { ...initialMapViewport };
     setUrl(); render(); scrollToTop();
   }
 
   function selectMapNode(id) {
     if (!byId(id)) return;
-    state.mapFocus = id;
+    state.mapFocus = id; state.mapMode = "focus";
     setUrl(); render();
   }
 
@@ -269,8 +275,9 @@
     if (button.dataset.action === "home") return home();
     if (button.hasAttribute("data-map")) return showMap();
     if (button.dataset.mapExplore) return selectFocus(button.dataset.mapExplore);
-    if (button.hasAttribute("data-map-clear")) { state.mapFocus = null; setUrl(); render(); return; }
-    if (button.hasAttribute("data-map-reset")) { mapViewport = { x: 0, y: 0, width: mapWidth, height: mapHeight }; render(); return; }
+    if (button.hasAttribute("data-map-clear")) { state.mapFocus = null; state.mapMode = "all"; setUrl(); render(); return; }
+    if (button.dataset.mapMode) { if (button.dataset.mapMode === "focus" && !state.mapFocus) return; state.mapMode = button.dataset.mapMode; render(); return; }
+    if (button.hasAttribute("data-map-reset")) { mapViewport = { ...initialMapViewport }; render(); return; }
     if (button.dataset.category) return selectCategory(button.dataset.category);
     if (button.dataset.focus) return selectFocus(button.dataset.focus);
     if (button.dataset.full) {
